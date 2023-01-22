@@ -1,0 +1,5 @@
+requests==2.28.1
+schedule==1.1.0
+user-agent==0.1.10
+urllib3==1.26.12
+colored==1.4.3
