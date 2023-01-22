@@ -1,0 +1,40 @@
+These information are not going to be used by the program, you can add them yourself to the files here
+
+Some examples of common SQL error messages that may indicate a SQL injection vulnerability:
+    MySQL and MariaDB:
+        You have an error in your SQL syntax
+        Unknown column
+        Unknown table
+        Table 'xxx' doesn't exist
+        Column 'xxx' in table 'xxx' is ambiguous
+        Unterminated string at line xxx
+        Data truncated for column 'xxx' at row xxx
+
+    Microsoft SQL Server and Sybase:
+        Unclosed quotation mark
+        Incorrect syntax near
+        Could not find stored procedure
+        Invalid column name
+        Invalid object name
+        Subquery returned more than 1 value
+        Divide by zero error
+
+    Oracle:
+        ORA-01756
+        ORA-00933
+        ORA-00904
+        ORA-01722
+        ORA-01789
+        ORA-01403
+        ORA-01400
+        ORA-00921
+        ORA-00942
+
+    PostgreSQL:
+        ERROR: column "xxx" does not exist
+        ERROR: relation "xxx" does not exist
+        ERROR: syntax error at or near "xxx"
+        ERROR: current transaction is aborted
+        ERROR: operator does not exist
+        ERROR: function xxx(xxx) does not exist
+        ERROR: value too long for type character

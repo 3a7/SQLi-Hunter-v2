@@ -1,0 +1,23 @@
+mysql_fetch_array()
+mysql_num_rows()
+Error Occurred While Processing Request
+Server Error in'/'Application
+Microsoft OLE DB Provider for ODBC Drivers error
+error in your SQL syntax
+VBScript Runtime
+ADODB.Field
+BOF or EOF
+ADODB.command
+JET Database
+Syntax error
+mysql_fetch_row()
+include()
+mysql_fetch_assoc()
+mysql_fetch_object()
+mysql_numrows()
+GetArray()
+FetchRow()
+Input string was not in a correct format
+Microsoft VBScript;
+Invalid Querystring
+OLE DB Provider for ODBC
