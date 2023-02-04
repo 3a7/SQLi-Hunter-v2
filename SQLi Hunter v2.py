@@ -22,6 +22,9 @@ vulnerability()
 run()
 main()
 
+Update v2.1 - 4 February 2023
+- Double checking the Blind SQL injection pages.
+- Simple patching
 '''
 
 # Create an ArgumentParser object
@@ -83,7 +86,7 @@ def arguments():
                 for line in file.readlines():
                     urls.add(line.strip('\n'))
         except Exception as e:
-            print(time,mark,yellow(str(e)))
+            print('['+cyan(str(t()))+'] ',mark,yellow(str(e)))
 
     elif args.url[0] == 'URL':
         urls.add(args.url[1])
@@ -99,7 +102,7 @@ def arguments():
         isproxy = True
         proxies_temp = [args.proxy.read().splitlines()]
         if args.proxy_type is None:
-            msg = f'{time} You need to provide proxies type in order to use the proxy file. Please provide proxies type by using {cyan("--proxy-type")} [{cyan("HTTP HTTPS SOCKS4 SOCKS5")}]'
+            msg = f'[{cyan(str(t()))}] You need to provide proxies type in order to use the proxy file. Please provide proxies type by using {cyan("--proxy-type")} [{cyan("HTTP HTTPS SOCKS4 SOCKS5")}]'
             raise NameError(msg)
         else:
             proxy_type = args.proxy_type
@@ -152,7 +155,7 @@ def telegram(info):
         try:
             requests.post(f'https://api.telegram.org/bot{telegram_info[0]}/sendMessage?chat_id={telegram_info[1]}&text={info}')
         except Exception as ex:
-            print(time,mark,'Error while sending info via telegram: ',yellow(str(ex)))
+            print('['+cyan(str(t()))+'] ',mark,'Error while sending info via telegram: ',yellow(str(ex)))
 
 
 # To keep track of everything
@@ -229,6 +232,17 @@ def vulnerability():
                 # If we're checking for blind sql injection
                 if blind:
                     if blind_error:
+                        try:
+                            if isproxy:
+                                res = requests.get(str(url),headers={'user-agent':agent()},timeout=int(blind_timeout),proxies=choice(proxies))
+                            else:
+                                res = requests.get(str(url),headers={'user-agent':agent()},timeout=int(blind_timeout))
+                        except requests.exceptions.ReadTimeout:        # the page is 99% vulnerable to Blind
+                            hits += 1
+                            inf = hit(url,requests.exceptions.ReadTimeout,symbol,param,True)
+                            telegram(urllib.parse.quote(inf))
+                            done = True
+                            break
                         hits += 1
                         inf = hit(url,requests.exceptions.ReadTimeout,symbol,param,False)
                         telegram(urllib.parse.quote(inf))
@@ -279,7 +293,6 @@ def vulnerability():
 # Dealing with threads and starting them
 def run():
     global running
-    running = True
 
     # Checks every second if the program is finished or not by checking if the active threads are only 1
     def CheckThreads():
@@ -307,7 +320,11 @@ def run():
 
 # The main function
 def main():
+    global running
+    running = True
+
     try:
+
         # Brings all arguments
         arguments()
 
@@ -315,13 +332,14 @@ def main():
         run()
 
         # Status
-        print(time, hashtag, 'Done checking all url\'s!',hashtag)
+        print('['+cyan(str(t()))+'] ', hashtag, 'Done checking all url\'s!',hashtag)
         print(mult,f"{cyan('ALL')}: {str(checked)}/{str(len(urls))}")
         print(mult,f"{green('HIT')}: {str(hits)}")
         print(mult,f"{red('BAD')}: {str(bad)}")
         print(mult,f"{yellow('ERROR')}: {str(error)}")
     except KeyboardInterrupt:
-        print('Bye :)')
+        running = False
+        print('Bye :)\nTerminating all threads..')
         sys.exit()
 
 
