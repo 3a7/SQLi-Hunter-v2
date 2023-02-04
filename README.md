@@ -67,5 +67,7 @@ Tested on
 - You can use different tools to get pages on a specific website. Tools like [GAU](https://github.com/lc/gau) and [hakrawler](https://github.com/hakluke/hakrawler) can help you with that.
 - I will keep updating the prorgam in the future, so check the repository every now and then.
 - If you're facing any issue while running the program, consider contacting me via telegram (@A7_acc) or Instagram (@a7.acc) and I'll help you fix it.
-
+## Update v2.1 - 4 February 2023
+- Double checking the Blind SQL injection pages.
+- Simple patching.
 ## Happy Hacking :)
