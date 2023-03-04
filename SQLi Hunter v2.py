@@ -28,7 +28,7 @@ Update v2.1 - 4 February 2023
 
 Update v2.2 - 3 March 2023
 - More precis Blind SQL Injection hits (3 checks)
-- -d Argument to decrease the amount of fake hits
+- -d Argument to decrease the amount of fake hits (for blind only)
 '''
 
 # Create an ArgumentParser object
@@ -38,7 +38,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--blind',required=False, action='store_true', help='To tell the program that you want to test for blind SQL injection. Default detectors in config/blind-SQLi-detectors.txt. You can change it if you want.')
 parser.add_argument('--blind-timeout',required=False, type=int, metavar='<int>', help='The blind sql detector timeout. ex. if the detector asks the website to wait 2 seconds, write 2 here. Default is 5 seconds')
 parser.add_argument('-url' , required=True,type=file_or_url,metavar='URL or FILE',help='Could be a single URL or a file of URL\'s to check, ex (-url file.txt) or (-url https://example.com/page.php?id=2')
-parser.add_argument('-d', action='store_true', help='Decrease the amount of hits to get %99 vulnerable pages ONLY')
+parser.add_argument('-d', action='store_true', help=f'Decrease the amount of hits to get 99 procent vulnerable pages ONLY')
 parser.add_argument('--clean', action='store_true', help='Clean un-wanted URL\'s before checking.')
 parser.add_argument('--proxy', type=argparse.FileType("r"),required=False,metavar='<FILE>', help='Use proxies file to check the URL\'s')
 parser.add_argument('--proxy-type',required=False,type=proxy_types ,help='Proxies type (HTTP/S, SOCKS4 or SOCKS5)')
@@ -73,6 +73,7 @@ def arguments():
     errors = [x for x in open('config/SQLi-errrors.txt','r',encoding='utf-8').read().splitlines()]
 
     
+
     # Retrieving the detectors / eihter blind or normal
     if args.blind:
         blind = True
