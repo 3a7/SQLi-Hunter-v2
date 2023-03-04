@@ -25,6 +25,10 @@ main()
 Update v2.1 - 4 February 2023
 - Double checking the Blind SQL injection pages.
 - Simple patching
+
+Update v2.2 - 3 March 2023
+- More precis Blind SQL Injection hits (3 checks)
+- -d Argument to decrease the amount of fake hits
 '''
 
 # Create an ArgumentParser object
@@ -34,6 +38,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--blind',required=False, action='store_true', help='To tell the program that you want to test for blind SQL injection. Default detectors in config/blind-SQLi-detectors.txt. You can change it if you want.')
 parser.add_argument('--blind-timeout',required=False, type=int, metavar='<int>', help='The blind sql detector timeout. ex. if the detector asks the website to wait 2 seconds, write 2 here. Default is 5 seconds')
 parser.add_argument('-url' , required=True,type=file_or_url,metavar='URL or FILE',help='Could be a single URL or a file of URL\'s to check, ex (-url file.txt) or (-url https://example.com/page.php?id=2')
+parser.add_argument('-d', action='store_true', help='Decrease the amount of hits to get %99 vulnerable pages ONLY')
 parser.add_argument('--clean', action='store_true', help='Clean un-wanted URL\'s before checking.')
 parser.add_argument('--proxy', type=argparse.FileType("r"),required=False,metavar='<FILE>', help='Use proxies file to check the URL\'s')
 parser.add_argument('--proxy-type',required=False,type=proxy_types ,help='Proxies type (HTTP/S, SOCKS4 or SOCKS5)')
@@ -49,7 +54,7 @@ args = parser.parse_args()
 
 # Dealing with arguments and setting them
 def arguments():
-    global detectors, urls, proxies, isproxy, threads, timeout, istelegram, telegram_info, agent, errors, blind_timeout, blind, verbose
+    global detectors, urls, proxies, isproxy, threads, timeout, istelegram, telegram_info, agent, errors, blind_timeout, blind, verbose, decrease
     blind = False
     blind_timeout = 5
     urls = set()
@@ -63,6 +68,7 @@ def arguments():
     telegram_info = None
     agent = generate_user_agent
     verbose = False
+    decrease = args.d
     # Most Common SQL Injection Errors
     errors = [x for x in open('config/SQLi-errrors.txt','r',encoding='utf-8').read().splitlines()]
 
@@ -70,13 +76,15 @@ def arguments():
     # Retrieving the detectors / eihter blind or normal
     if args.blind:
         blind = True
+        print(f'[{cyan(str(t()))}] Make sure you specified the correct timeout for Blind SQL Injection.')
+        print(f'[{cyan(str(t()))}] If you are using the default Blind SQL Detectors you don\'t need to specifiy it')
         detectors = [x for x in open('config/blind-SQLi-detectors.txt','r',encoding='utf-8').read().splitlines()]
     else:
         detectors = [x for x in open('config/SQLi-detectors.txt','r',encoding='utf-8').read().splitlines()]
 
     if args.blind_timeout is not None:
         blind_timeout = args.blind_timeout
-
+    
     # Checking -url argument
     if args.url[0] == 'FILE':
         # Here we are using .readlines() instead of .read().splitlines() to avoid MemoryError
@@ -90,7 +98,6 @@ def arguments():
 
     elif args.url[0] == 'URL':
         urls.add(args.url[1])
-
 
     # Checking --clean argument
     if clean:
@@ -211,7 +218,7 @@ def vulnerability():
                         print(f"[{cyan(str(param))}] [{blue(symbol)}] Checking: ",curl)
 
                     if blind:
-                        try:
+                        try: # Blind check no 1
                             if isproxy:
                                 res = requests.get(str(url),headers={'user-agent':agent()},timeout=int(blind_timeout)-1,proxies=choice(proxies))
                             else:
@@ -231,22 +238,42 @@ def vulnerability():
 
                 # If we're checking for blind sql injection
                 if blind:
-                    if blind_error:
-                        try:
+                    if blind_error: 
+                        try: # blind check no 2
                             if isproxy:
-                                res = requests.get(str(url),headers={'user-agent':agent()},timeout=int(blind_timeout),proxies=choice(proxies))
+                                res = requests.get(str(url),headers={'user-agent':agent()},timeout=int(blind_timeout+5),proxies=choice(proxies))
                             else:
-                                res = requests.get(str(url),headers={'user-agent':agent()},timeout=int(blind_timeout))
-                        except requests.exceptions.ReadTimeout:        # the page is 99% vulnerable to Blind
-                            hits += 1
-                            inf = hit(url,requests.exceptions.ReadTimeout,symbol,param,True)
-                            telegram(urllib.parse.quote(inf))
+                                res = requests.get(str(url),headers={'user-agent':agent()},timeout=int(blind_timeout+5))
+                            
+                            # Here it means the page is 99% vulnerable to Blind
+                            # blind check no 3
+
+                            # In the payload we're replacing the current timeout with a higher one and checking if 
+                            # it's only the website that is taking time to load or it's actually vulnerable
+                            url = urli+symbol.replace(str(blind_timeout),str(blind_timeout+10))+site[after_param:]
+
+                            try:
+                                if isproxy:
+                                    res = requests.get(str(url),headers={'user-agent':agent()},timeout=int(blind_timeout+5),proxies=choice(proxies))
+                                else:
+                                    res = requests.get(str(url),headers={'user-agent':agent()},timeout=int(blind_timeout+5))
+                            
+                            except requests.exceptions.ReadTimeout:        # the page is 99% vulnerable to Blind
+                                hits += 1
+                                inf = hit(url,requests.exceptions.ReadTimeout,symbol,param,True)
+                                telegram(urllib.parse.quote(inf))
+                                done = True
+                                break
+                                
+                        except requests.exceptions.ReadTimeout:        # the page is 50% vulnerable to Blind
+                            if not decrease:
+                                hits += 1
+                                inf = hit(url,requests.exceptions.ReadTimeout,symbol,param,False)
+                                telegram(urllib.parse.quote(inf))
+                            else:
+                                bad += 1
                             done = True
                             break
-                        hits += 1
-                        inf = hit(url,requests.exceptions.ReadTimeout,symbol,param,False)
-                        telegram(urllib.parse.quote(inf))
-                        break
                     else:
                         bad += 1
                         continue
