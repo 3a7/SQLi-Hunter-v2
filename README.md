@@ -70,4 +70,7 @@ Tested on
 ## Update v2.1 - 4 February 2023
 - Double checking the Blind SQL injection pages.
 - Simple patching.
+## Update v2.2 - 3 March 2023
+- More precis Blind SQL Injection hits (3 checks)
+- -d Argument to decrease the amount of fake hits (for blind only)
 ## Happy Hacking :)
