@@ -72,5 +72,5 @@ Tested on
 - Simple patching.
 ## Update v2.2 - 3 March 2023
 - More precis Blind SQL Injection hits (3 checks)
-- -d Argument to decrease the amount of fake hits (for blind only)
+- `-d` Argument to decrease the amount of fake hits (for blind only)
 ## Happy Hacking :)
