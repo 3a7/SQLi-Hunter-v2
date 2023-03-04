@@ -23,27 +23,24 @@ SQLi Hunter v2 is a python program that checks for SQL (and Blind) injection vul
 ## Manual page in SQLi Hunter v2
 ```
 C:\Users\a7\Desktop\SQLi Hunter v2>python "SQLi Hunter v2.py" -h
-usage: SQLi Hunter v2.py [-h] [--blind] [--blind-timeout <int>] -url URL or FILE [--clean] [--proxy <FILE>]
-                         [--proxy-type PROXY_TYPE] [-t <int>] [--timeout <int>] [--telegram] [--user-agent <str>] [-v]
+usage: SQLi Hunter v2.py [-h] [--blind] [--blind-timeout <int>] -url URL or FILE [-d] [--clean] [--proxy <FILE>] [--proxy-type PROXY_TYPE] [-t <int>] [--timeout <int>] [--telegram]
+                         [--user-agent <str>] [-v]
 
 options:
   -h, --help            show this help message and exit
-  --blind               To tell the program that you want to test for blind SQL injection. Default detectors in
-                        config/blind-SQLi-detectors.txt. You can change it if you want.
+  --blind               To tell the program that you want to test for blind SQL injection. Default detectors in config/blind-SQLi-detectors.txt. You can change it if you want.
   --blind-timeout <int>
-                        The blind sql detector timeout. ex. if the detector asks the website to wait 2 seconds, write
-                        2 here. Default is 5 seconds
-  -url URL or FILE      Could be a single URL or a file of URL's to check, ex (-url file.txt) or (-url
-                        https://example.com/page.php?id=2
+                        The blind sql detector timeout. ex. if the detector asks the website to wait 2 seconds, write 2 here. Default is 5 seconds
+  -url URL or FILE      Could be a single URL or a file of URL's to check, ex (-url file.txt) or (-url https://example.com/page.php?id=2
+  -d                    Decrease the amount of hits to get 99 procent vulnerable pages ONLY
   --clean               Clean un-wanted URL's before checking.
   --proxy <FILE>        Use proxies file to check the URL's
   --proxy-type PROXY_TYPE
                         Proxies type (HTTP/S, SOCKS4 or SOCKS5)
   -t <int>              Amount threads. Default is 10
-  --timeout <int>       The amount of milliseconds to wait until making a request to the next link (is it has the same
-                        domain) to avoid false DoS attack against the domain. Default is 0 (one second is 1000)
-  --telegram            To get hits on telegram, you can provide your bot's token and your telegram ID in this file
-                        config/tele.txt in this format token/id
+  --timeout <int>       The amount of milliseconds to wait until making a request to the next link (is it has the same domain) to avoid false DoS attack against the domain. Default is 0
+                        (one second is 1000)
+  --telegram            To get hits on telegram, you can provide your bot's token and your telegram ID in this file config/tele.txt in this format token/id
   --user-agent <str>    Specify certain user-agent. Default is random
   -v                    Increase verbosity
   ```
